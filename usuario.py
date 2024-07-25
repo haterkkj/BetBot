@@ -1,5 +1,5 @@
 import database
-import paginator
+import utils.paginator as paginator
 import discord
 import datetime
 import time

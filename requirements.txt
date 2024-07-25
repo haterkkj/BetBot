@@ -1,5 +1,5 @@
-pip install discord
-pip install mysql-connector
-pip install selenium
-pip install dotenv
-pip install tzdata
+discord.py==2.3.2
+mysql_connector_repackaged==0.3.1
+python-dotenv==1.0.1
+schedule==1.2.2
+selenium==4.23.1
