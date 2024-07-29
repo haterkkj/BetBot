@@ -1,6 +1,6 @@
 # BetBot
 
-BetBot é um bot de Discord que permite aos usuários realizar apostas de forma fácil e interativa.
+BetBot é um bot de Discord automatizado que permite aos usuários realizar apostas esportivas de forma fácil e interativa.
 
 ----
 
@@ -9,25 +9,34 @@ BetBot é um bot de Discord que permite aos usuários realizar apostas de forma 
 Siga os passos abaixo para configurar o ambiente e instalar as dependências do BetBot.
 
 1. Clone o repositório:
+
    ```bash
    git clone https://github.com/seu-usuario/betbot.git
    ```
 
 2. Navegue até o diretório do projeto:
+
    ```bash
    cd betbot
    ```
 
 3. Instale as dependências:
+
    ```bash
    pip install -r requirements.txt
    ```
+
+4. Crie o schema do banco de dados:
+
+   Execute o script SQL `apostas_db.sql` para criar as tabelas necessárias no banco de    dados. 
 
 ---
 
 ## Executando o BetBot
 
-1. Certifique-se de que o arquivo `.env` está configurado corretamente com as variáveis de ambiente necessárias. O arquivo `.env` deve conter:
+1. Crie um arquivo sobre o nome `.env` no diretório principal do repositório
+
+2. Certifique-se de que o arquivo `.env` está configurado corretamente com as variáveis de ambiente necessárias. O arquivo `.env` deve conter:
 
    ```bash
    DISCORD_TOKEN=seu_token_do_discord
@@ -38,7 +47,7 @@ Siga os passos abaixo para configurar o ambiente e instalar as dependências do 
    DATABASE=seu_banco_de_dados_mysql
    ```
 
-2. Inicie o bot:
+3. Inicie o bot:
 
    ```bash
    python bot.py
