@@ -20,6 +20,11 @@ class PaginatorView(discord.ui.View):
         self.children[1].style = discord.ButtonStyle.green
 
     async def atualiza_footer(self, interaction: discord.Interaction, botaopressionado: str) -> None:
+        '''
+            Função responsável por atualizar footer do embed com a devida página em que
+            se encontra.
+            :param botaopressionado: recebe um valor contendo a informação de qual botão foi pressionado
+        '''
         if botaopressionado == 'proximo':
             self._current_page += 1
         elif botaopressionado == 'anterior':
@@ -35,6 +40,11 @@ class PaginatorView(discord.ui.View):
 
     @discord.ui.button(label='<')
     async def anterior(self, interaction:discord.Interaction, _):
+        '''
+            Função responsável por criar o botão "anterior" e sua funcionalidade.
+            Caso o botão for pressionado, a mensagem será atualizada com o embed anterior ao
+            que estava sendo mostrado no momento.
+        '''
         self._queue.rotate(1)
         embed = self._queue[0]
         await self.atualiza_footer(interaction, 'anterior')
@@ -43,6 +53,11 @@ class PaginatorView(discord.ui.View):
 
     @discord.ui.button(label='>')
     async def proximo(self, interaction:discord.Interaction, _):
+        '''
+            Função responsável por criar o botão "próximo" e sua funcionalidade.
+            Caso o botão for pressionado, a mensagem será atualizada com o próximo embed
+            em relação ao que estava sendo mostrado.
+        '''
         self._queue.rotate(-1)
         embed = self._queue[0]
         await self.atualiza_footer(interaction, 'proximo')

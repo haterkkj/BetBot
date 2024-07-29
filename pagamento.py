@@ -5,13 +5,24 @@ import time
 from zoneinfo import ZoneInfo
 
 def agenda_pagamento():
-        schedule.every().day.at('03:05').do(pagar_apostas)
-        print('Rotina de pagamento agendada.')
-        while True:
-            schedule.run_pending()
-            time.sleep(60)
+    '''
+        Esta função é responsável por agendar o pagamento das
+        apostas do dia anterior, definindo a hora em que o programa
+        deve executar as funções da rotina.
+    '''
+    schedule.every().day.at('03:05').do(pagar_apostas)
+    print('Rotina de pagamento agendada.')
+    while True:
+        schedule.run_pending()
+        time.sleep(60)
 
 def pagar_apostas():
+    '''
+        Esta função é responsável por selecionar todas as apostas feitas e jogos realizados no dia anterior
+        e devolve o valor da aposta multiplicado pela odd do jogo (sistema de odd ainda não implementado, por padrão é pago 2 vezes o valor apostado)
+        caso o palpite e o resultado do jogo forem iguais.
+        :return: valor boolean falso para o caso de não haverem jogos constando no dia anterior ou apostas a serem pagas
+    '''
     db = database.DatabaseManager()
     db.iniciar_transacao()
     

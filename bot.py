@@ -18,10 +18,17 @@ class Bot(commands.Bot):
         self.cogslist = ["cogs.commands"]
     
     async def setup_hook(self):
+        '''
+            Função responsável por carregar nosso arquivo "commands.py", por se tratar de um cog
+            este procedimento se torna necessário.
+        '''
         for ext in self.cogslist:
             await self.load_extension(ext)
 
     async def on_ready(self):
+        '''
+            Função responsável por sincronizar "slash commands" do bot.
+        '''
         print(f'    Logado como {self.user.name}')
         print(f'    Bot ID: {self.user.id}')
         print(f'    Versão do Discord: {discord.__version__}')
@@ -35,6 +42,11 @@ def signal_handler(sig, frame):
 TOKEN = os.getenv('DISCORD_TOKEN') 
 
 if __name__ == '__main__':
+    '''
+        Nesta função serão inicializados os threads, com as funções de rotina (pagamento e scraping),
+        e o bot em si.
+    '''
+
     signal.signal(signal.SIGINT, signal_handler)
 
     scraping_thread = threading.Thread(target=scraping.WebScrapJogos().agenda_scraping)

@@ -9,6 +9,14 @@ img = 'https://us.123rf.com/450wm/pixelliebe/pixelliebe2009/pixelliebe200900100/
 nome_bot = 'BetBot'
 
 def consultar_saldo(userid: int):
+    '''
+        Esta função faz um select na tabela 'usuario', recupera o saldo do usuário
+        e informa para o mesmo qual valor ele tem em sua conta.
+        :param userid: ID de usuário da pessoa que executou o comando
+        :return: retorna um valor boolean para o caso da operação dar certo ou errado,
+                 uma mensagem que será enviada para o usuário informando o saldo ou o erro,
+                 e caso a operação for bem sucedida, também é retornado o valor do saldo do usuário
+    '''
     db = database.DatabaseManager()
     db.iniciar_transacao()
     select = db.realizar_select('usuario', '*', f'id = {userid}')
@@ -33,6 +41,17 @@ def consultar_saldo(userid: int):
         return False, mensagem, None
 
 def adicionar_saldo(userid: int, valor: float):
+    '''
+        Esta função recebe o valor que o usuário deseja depositar em sua conta e
+        faz o insert ou update no banco de dados do valor somando o valor antigo que é recuperado
+        por um select ao valor que o usuário está inserindo agora.
+        Caso o usuário nunca tiver feito um depósito o usuário é inserido no sistema automáticamente.
+        A ação também é inserida na tabela 'transacoes' do BD.
+        :param userid: ID de usuário da pessoa que executou o comando
+        :param valor: valor que o usuário deseja depositar em sua conta
+        :return: valor boolean para o caso de a operação dar certo ou errado e
+                 mensagem de sucesso ou erro para que o usuário saiba o que ocorreu.
+    '''
     db = database.DatabaseManager()
     db.iniciar_transacao()
     now = database.retorna_data_hora_no_formato_do_bd()
@@ -93,6 +112,15 @@ def adicionar_saldo(userid: int, valor: float):
                 return False, mensagem
 
 def sacar_saldo(userid:int, valor: float):
+    '''
+        Esta função recebe o valor que o usuário deseja sacar, recupera o valor que ele possui em sua conta
+        e caso haver a quatia suficiente, o saldo do usuário é atualizado com o novo saldo.
+        A ação também é inserida na tabela 'transacoes' do BD.
+        :param userid: ID de usuário da pessoa que executou o comando
+        :param valor: valor que o usuário deseja retirar de sua conta
+        :return: valor boolean para o caso de a operação dar certo ou errado e
+                 mensagem de sucesso ou erro para que o usuário saiba o que ocorreu.
+    '''
     db = database.DatabaseManager()
     db.iniciar_transacao()
     now = database.retorna_data_hora_no_formato_do_bd()
@@ -136,6 +164,14 @@ def sacar_saldo(userid:int, valor: float):
         return False, mensagem
     
 def recuperar_extrato(userid: int, interaction: discord.Interaction):
+    '''
+        Esta função é responsável por mostrar o extrato de todas as operações envolvendo o saldo
+        do usuário que foram realizadas desde o primeiro depósito até o momento de execução da função.
+        :param userid: ID de usuário da pessoa que executou o comando
+        :param interaction: interação do usuário com a aplicação no discord.
+        :return: valor boolean para o caso de a operação dar certo ou errado e
+                 mensagem de sucesso ou erro para que o usuário saiba o que ocorreu.
+    '''
     db = database.DatabaseManager()
     db.iniciar_transacao()
     select = db.realizar_select('transacoes', '*', f'user_id = {userid}')
@@ -167,6 +203,17 @@ def recuperar_extrato(userid: int, interaction: discord.Interaction):
         return False, mensagem
 
 def apostar(userid: int, jogoid: int, valor: float, time: str):
+    '''
+        Esta função recebe o ID do usuário, o valor que ele deseja apostar, o jogo em que
+        ele deseja apostar e o palpite dele sobre o jogo.
+        A ação também é inserida na tabela 'transacoes' do BD.
+        :param userid: ID de usuário da pessoa que executou o comando
+        :param jogoid: ID do jogo informado pelo usuário
+        :param valor: valor informado pelo usuário
+        :param time: palpite do usuário sobre o jogo.
+        :return: valor boolean para o caso de a operação dar certo ou errado e
+                 mensagem de sucesso ou erro para que o usuário saiba o que ocorreu.
+    '''
     db = database.DatabaseManager()
     db.iniciar_transacao()
     now = database.retorna_data_hora_no_formato_do_bd()
@@ -252,6 +299,15 @@ def apostar(userid: int, jogoid: int, valor: float, time: str):
         return False, mensagem
     
 def cancelar_aposta(userid, apostaid):
+    '''
+        Esta função recebe do usuário o ID da aposta que ele deseja cancelar e
+        caso for possível, a mesma é apagada do sistema e o saldo é devolvido a sua conta.
+        A ação também é inserida na tabela 'transacoes' do BD.
+        :param userid: ID de usuário da pessoa que executou o comando
+        :param apostaid: ID da aposta que o usuário deseja cancelar
+        :return: valor boolean para o caso de a operação dar certo ou errado e
+                 mensagem de sucesso ou erro para que o usuário saiba o que ocorreu.
+    '''
     db = database.DatabaseManager()
     db.iniciar_transacao()
     now = database.retorna_data_hora_no_formato_do_bd()
@@ -309,6 +365,13 @@ def cancelar_aposta(userid, apostaid):
         return False, mensagem
     
 def listar_apostas_do_usuario(userid: int, interaction: discord.Interaction):
+    '''
+        Esta função é responsável por mostrar todas as apostas que o usuario já realizou.
+        :param userid: ID de usuário da pessoa que executou o comando
+        :param interaction: interação do usuário com a aplicação no discord.
+        :return: valor boolean para o caso de a operação dar certo ou errado e
+                 mensagem contendo todas as apostas já realizadas ou mensagem de erro.
+    '''
     db = database.DatabaseManager()
     db.iniciar_transacao()
     embeds = []
@@ -332,6 +395,11 @@ def listar_apostas_do_usuario(userid: int, interaction: discord.Interaction):
         return False, embed
     
 def lista_jogos_do_dia():
+    '''
+        Esta função realiza um select dos jogos que irão acontecer hoje e os mostra para o usuário.
+        :return: valor boolean para o caso de a operação dar certo ou errado e
+                 mensagem contendo todos os jogos do dia ou mensagem de erro.
+    '''
     embeds = []
     now = database.retorna_data_hora_no_formato_do_bd()
     db = database.DatabaseManager()

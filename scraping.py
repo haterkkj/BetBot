@@ -14,6 +14,10 @@ class WebScrapJogos():
         pass
 
     def agenda_scraping(self):
+        '''
+            Esta função é responsável por agendar o scraping, definindo a hora
+            em que o programa deve executar as funções da rotina.
+        '''
         schedule.every().day.at('03:00').do(self.executa_scraping)
         print('Rotina de scraping agendada.')
         while True:
@@ -21,10 +25,19 @@ class WebScrapJogos():
             time.sleep(60)
 
     def executa_scraping(self):
+        '''
+            Está função é responsável por realizar os trabalhos do dia e do dia anterior
+        '''
         self.realiza_trabalho_da_rotina_diaria('hoje')
         self.realiza_trabalho_da_rotina_diaria('ontem')
 
     def realiza_trabalho_da_rotina_diaria(self, dia: str):
+        '''
+            Esta função é responsável por percorrer uma rotina de trabalhos.
+            Os trabalhos da rotina dependem de seu parametro "dia", podendo realizar
+            trabalhos de "hoje" ou "ontem".
+            :param dia: recebe uma string, os valores esperados são "hoje" ou "ontem"
+        '''
         service = Service()
         options = webdriver.ChromeOptions()
         driver = webdriver.Chrome(service=service, options=options)
@@ -63,6 +76,13 @@ class WebScrapJogos():
             self.atualiza_resultados_jogos_de_ontem_no_bd(jogos_de_ontem, campeonato_jogos_ontem, horario_dos_jogos_ontem, resultado_dos_jogos)
 
     def recupera_data_hora_dos_jogos(self, section):
+        '''
+            Esta função percorre a section recebida como parametro e armazena a data
+            de todos os jogos do dia em um array. As datas são formatadas com o formato
+            especifíco para uso no BD.
+            :param section: section na qual será buscado os elementos
+            :return: array com todos os horarios encontrados na página já formatados
+        '''
         infos_jogo = section.find_elements(By.CLASS_NAME, 'sc-jXbUNg')
         horario_jogos_formatados = []
         for info_jogo in infos_jogo:
@@ -71,6 +91,12 @@ class WebScrapJogos():
         return horario_jogos_formatados
 
     def recupera_nome_times_do_jogo(self, section):
+        '''
+            Esta função percorre a section recebida como parametro e armazena o nome
+            dos dois times de cada jogo encontrado na página.
+            :param section: section na qual será buscado os elementos
+            :return: objeto com o nome dos dois times de cada jogo
+        '''
         nome_times = section.find_elements(By.CLASS_NAME, 'sc-eeDRCY')
         nome_times_do_jogo = []
         i = 0 
@@ -85,6 +111,12 @@ class WebScrapJogos():
         return nome_times_do_jogo
 
     def recupera_campeonato_dos_jogos(self, section):
+        '''
+            Esta função percorre a section recebida como parametro e armazena o nome
+            do campeonato ao qual pertence cada um dos jogos do dia.
+            :param section: section na qual será buscado os elementos
+            :return: array com o campeonato de cada um dos jogos do dia
+        '''
         campeonato_do_jogo = []
         campeonato = None
         times_vistos = 0
@@ -99,6 +131,14 @@ class WebScrapJogos():
         return campeonato_do_jogo
     
     def recupera_resultado_dos_jogos_ontem(self, section):
+        '''
+            Esta função percorre a section recebida como parametro e verifica 
+            qual time venceu a partida com base em quem fez mais ou menos gol.
+            Caso a quantidade de gols de ambos times do jogo forem iguais, é declarado empate.
+            Esta função somente funcionará da forma correta se o dia informado na rotina for "ontem".
+            :param section: section na qual será buscado os elementos
+            :return: array com o resultados de todos os jogos do dia anterior.
+        '''
         gols_dos_jogos = []
         resultado_dos_jogos = []
         i=0
@@ -116,6 +156,12 @@ class WebScrapJogos():
         return resultado_dos_jogos
     
     def insere_jogos_de_hoje_no_bd(self, jogos_do_dia, campeonato_jogos, data_hora_jogos):
+        '''
+            Esta função insere no banco de dados os jogos que ocorrerão no dia.
+            :param jogos_do_dia: objeto contendo o nome dos dois times de cada jogo
+            :param campeonato_jogos: array contendo o nome dos campeonatos de cada jogo
+            :param data_hora_jogos: array contendo a data e hora que cada jogo ocorrerá.
+        '''
         db = database.DatabaseManager()
         db.iniciar_transacao()
         for jogo_do_dia, campeonato_jogo, data_hora_jogo in zip(jogos_do_dia, campeonato_jogos, data_hora_jogos):
@@ -132,6 +178,13 @@ class WebScrapJogos():
             print(f'Falha ao inserir jogos do dia {data_hora_jogo} no Banco de Dados')
     
     def atualiza_resultados_jogos_de_ontem_no_bd(self, jogos_de_ontem, campeonato_jogos, data_hora_jogos, resultado_jogos_de_ontem):
+        '''
+            Esta função atualiza a coluna "resultado" de cada jogo que foi jogado no dia anterior.
+            :param jogos_do_dia: objeto contendo o nome dos dois times de cada jogo
+            :param campeonato_jogos: array contendo o nome dos campeonatos de cada jogo
+            :param data_hora_jogos: array contendo a data e hora que cada jogo ocorreu
+            :param data_hora_jogos: array contendo o resultado de cada jogo que ocorreu no dia anterior.
+        '''
         db = database.DatabaseManager()
         db.iniciar_transacao()
         for jogo_de_ontem, campeonato_jogo, data_hora_jogo, resultado_jogo in zip(jogos_de_ontem, campeonato_jogos, data_hora_jogos, resultado_jogos_de_ontem):
