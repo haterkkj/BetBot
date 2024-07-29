@@ -391,6 +391,7 @@ def listar_apostas_do_usuario(userid: int, interaction: discord.Interaction):
         return True, view
     else:
         embed = discord.Embed(title='Erro ao visualizar apostas', description='Aparentemente você ainda não tem nenhuma aposta.\nApós apostar, você poderá ver as apostas realizadas aqui.\n\nCaso você já tenha apostado e o erro segue ocorrendo, contate um administrador.', color=discord.Color.brand_red())
+        embed.set_author(name=nome_bot, icon_url=img)
         db.faz_rollback()
         return False, embed
     
@@ -423,5 +424,6 @@ def lista_jogos_do_dia():
         return True, view
     else:
         mensagem = discord.Embed(title='Erro ao consultar jogos do dia', description='Não conseguimos consultar os jogos de hoje.\nContate um administrador do sistema.', color=discord.Color.brand_red())
+        mensagem.set_author(name=nome_bot, icon_url=img)
         db.faz_rollback()
         return False, mensagem
