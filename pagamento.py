@@ -10,11 +10,11 @@ def agenda_pagamento():
         apostas do dia anterior, definindo a hora em que o programa
         deve executar as funções da rotina.
     '''
-    schedule.every().day.at('03:05').do(pagar_apostas)
+    schedule.every().day.at('04:00').do(pagar_apostas)
     print('Rotina de pagamento agendada.')
     while True:
         schedule.run_pending()
-        time.sleep(60)
+        time.sleep(90)
 
 def pagar_apostas():
     '''
