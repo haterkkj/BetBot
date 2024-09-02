@@ -1,9 +1,16 @@
+import os
 import database
 import utils.paginator as paginator
 import discord
 import usuario
 from discord.ext import commands
 from discord import app_commands
+
+OWNER_ID = os.getenv('OWNER_ID')
+def cooldown_pra_todos_menos_owner(interact: discord.Interaction):
+    if interact.user.id == OWNER_ID:
+        return None
+    return app_commands.Cooldown(1, 60.0)
 
 class Commands(commands.Cog):
     def __init__(self, bot: commands.Bot):
@@ -16,6 +23,7 @@ class Commands(commands.Cog):
         app_commands.Choice(name='Time 2', value='time2'),
         app_commands.Choice(name='Empate', value='empate')
     ])
+    @app_commands.checks.dynamic_cooldown(cooldown_pra_todos_menos_owner)
     async def apostar(self, interaction: discord.Interaction, idjogo: int, valorapostado: float, timevencedor: app_commands.Choice[str]):
         '''
             Esta função é responsável por criar o comando de aposta que o usuário utilizara para apostar
@@ -35,6 +43,7 @@ class Cancelar(commands.GroupCog):
         self.bot = bot
 
     @app_commands.command(name='aposta', description='Comando utilizado para cancelar uma aposta que o usuário realizou.')
+    @app_commands.checks.dynamic_cooldown(cooldown_pra_todos_menos_owner)
     async def deletar_aposta_do_DB(self, interaction: discord.Interaction, aposta_id: int):
         '''
             Esta função é responsável por criar o comando de cancelar aposta que o usuário
@@ -54,6 +63,7 @@ class Visualizar(commands.GroupCog):
         self.bot = bot
     
     @app_commands.command(name='apostas', description='Comando utilizado para visualizar apostas que o usuário realizou.')
+    @app_commands.checks.dynamic_cooldown(cooldown_pra_todos_menos_owner)
     async def listar_apostas_no_DB(self, interaction: discord.Interaction):
         '''
             Esta função é responsável por criar o comando "visualizar apostas", serve para que o usuário
@@ -67,6 +77,7 @@ class Visualizar(commands.GroupCog):
             await interaction.response.send_message(embed=mensagem, ephemeral=True)
     
     @app_commands.command(name='jogos', description='Comando utilizado para listar jogos que vão ocorrer no dia e são possiveis de apostar')
+    @app_commands.checks.dynamic_cooldown(cooldown_pra_todos_menos_owner)
     async def listar_jogos_do_dia(self, interaction: discord.Interaction):
         '''
             Esta função é responsável por criar o comando "visualizar jogos", serve para que o usuário
@@ -79,11 +90,14 @@ class Visualizar(commands.GroupCog):
         else:
             await interaction.response.send_message(embed=mensagem, ephemeral=True)
 
+        
+
 class Saldo(commands.GroupCog):
     def __init__(self, bot: commands.Bot):
         self.bot = bot
 
     @app_commands.command(name='consultar', description='Comando utilizado para verificar seu saldo.')
+    @app_commands.checks.dynamic_cooldown(cooldown_pra_todos_menos_owner)
     async def consultar_saldo_no_BD(self, interact:discord.Interaction):
         '''
             Esta função é responsável por criar o comando "saldo consultar", serve para que o usuário
@@ -97,6 +111,7 @@ class Saldo(commands.GroupCog):
             await interact.response.send_message(embed=mensagem, ephemeral=True)
 
     @app_commands.command(name='depositar', description='Comando utilizado para adicionar dinheiro à sua conta.')
+    @app_commands.checks.dynamic_cooldown(cooldown_pra_todos_menos_owner)
     async def depositar(self, interact:discord.Interaction, valor: float):
         '''
             Esta função é responsável por criar o comando "saldo depositar", serve para que o usuário
@@ -111,6 +126,7 @@ class Saldo(commands.GroupCog):
             await interact.response.send_message(embed=mensagem, ephemeral=True)
 
     @app_commands.command(name='sacar', description='Comando utilizado para adicionar sacar dinheiro de sua conta.')
+    @app_commands.checks.dynamic_cooldown(cooldown_pra_todos_menos_owner)
     async def sacar(self, interact:discord.Interaction, valor: float):
         '''
             Esta função é responsável por criar o comando "saldo sacar", serve para que o usuário
@@ -125,6 +141,7 @@ class Saldo(commands.GroupCog):
             await interact.response.send_message(embed=mensagem, ephemeral=True)
 
     @app_commands.command(name='extrato', description='Comando utilizado para verificar o extrato do seu saldo.')
+    @app_commands.checks.dynamic_cooldown(cooldown_pra_todos_menos_owner)
     async def extrato(self, interact:discord.Interaction):
         '''
             Esta função é responsável por criar o comando "saldo extrato", serve para que o usuário
