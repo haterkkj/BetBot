@@ -11,7 +11,8 @@ CREATE TABLE IF NOT EXISTS `apostas_db`.`aposta` (
    `valor_aposta` float NOT NULL,
    `data_da_aposta` datetime NOT NULL,
    `situacao` varchar(50) DEFAULT NULL,
-   PRIMARY KEY (`id`)
+   PRIMARY KEY (`id`),
+   CONSTRAINT `aposta_usuario_userid` FOREIGN KEY (`user_id`) REFERENCES `usuario` (`id`)
  );
 
 DROP TABLE IF EXISTS `apostas_db`.`jogos`;

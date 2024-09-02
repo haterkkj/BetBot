@@ -76,6 +76,6 @@ Este projeto está licenciado sob a Licença MIT - veja o arquivo [LICENSE](LICE
 
 ## Autores
 
-- **Thiago Ferreira dos Santos** - *Autor principal e desenvolvimento completo* - [GitHub](https://github.com/haterkkj)
+- **Thiago Ferreira dos Santos** - *Autor e desenvolvedor* - [GitHub](https://github.com/haterkkj)
 
 ---
